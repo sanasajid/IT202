@@ -21,7 +21,35 @@ try{
 				) CHARACTER SET utf8 COLLATE utf8_general_ci"
 			);
 	$stmt->execute();
-	echo var_export($stmt->errorInfo(), true); 
+
+	//echo "<pre>" . var_export
+	     //	($stmt->errorInfo(), true) . "</pre>";
+	$stmt = $db->prepare("INSERT INTO `Test`
+		(username, pin) VALUES
+		(:username, :pin)");
+	//$stmt->bindValue(":username", 'Bob');
+	//$stmt->bindValue(":pin", 1234);
+	//or you can do this 
+	$params = array(":username"=> 'Bob', ":pin" => 1234);
+	$stmt->execute($params); 
+	echo "<pre>" . var_export($stmt->errorInfo(), true) . "</pre>";
+	$stmt = $db->prepare("SELECT id, username
+				FROM `Test` WHERE id = :id");
+	$r = $stmt->execute(array(":id"=>1));
+	$results = $stmt->fetch(PDO::FETCH_ASSOC);
+	echo "<pre>" . var_export($r, true) . "</pre>";
+	echo "<pre>" . var_export($results, true) . "</pre>";
+	echo "<pre>" . var_export($stmt->errorInfo(), true) . "</pre>"; 
+
+	echo "<br> Delete query (one)<br>";
+
+	$stmt = $db->prepare("DELETE from `Test`
+			
+			WHERE id = :id");
+	$r = $stmt->execute(array(":id"=>1));
+	echo "<pre>" . var_export($r, true) . "</pre>";
+	echo "pre>" . var_export($stmt->errorInfo(), true) . "</pre>";  
+	 
 
 }
 catch(Exception $e){
