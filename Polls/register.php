@@ -3,7 +3,8 @@
 		<title>My Project - Register</title>
 		<style>
 		body{
-			background-color: rgba(192,192,192,0.3);
+			//background-color: rgba(192,192,192,0.3);
+			background-image: url('https://media.giphy.com/media/Cv7wrQjYcd6hO/giphy.gif');
 			color: black; 
 		}
 		.center{
@@ -88,16 +89,6 @@
 </html>
 <?php 
 
-if(!empty($_REQUEST)){
-	echo "Request:<pre>" . var_export($_REQUEST, true) . "</pre>";
-}
-if(!empty($_GET)){
-	echo "GET:<pre>" . var_export($_GET, true) . "</pre>";
-}
-if(!empty($_POST)){
-	echo "POST:<pre>" . var_export($_POST, true) . "</pre>";
-}
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -117,7 +108,7 @@ if(isset($_POST['email'])
 		$msg = "You are now registered!"; 
 	
 	$pass = password_hash($pass, PASSWORD_BCRYPT);
-	echo "<br>$pass<br>"; 
+	//echo "<br>$pass<br>"; 
 	require("config.php");
 	$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
 	try{
@@ -129,7 +120,7 @@ if(isset($_POST['email'])
 	$email = $_POST['email'];
 	$params = array(":email"=> $email, ":password"=> $pass);
         $stmt->execute($params);
-	echo "<pre>" . var_export($stmt->errorInfo(), true) . "</pre>";
+	//echo "<pre>" . var_export($stmt->errorInfo(), true) . "</pre>";
 
 	} 
 

@@ -22,7 +22,8 @@ if(ini_get("session.use_cookies")) {
 <head>
 <style>
 body{
-	background-color: rgba(192,192,192,0.3);
+	//background-color: rgba(192,192,192,0.3);
+	background-image: url('https://media.giphy.com/media/Cv7wrQjYcd6hO/giphy.gif');
 	color: black; 
 }
 
