@@ -4,8 +4,14 @@
 	<style>
 	body{
 		//background-color: rgba(192,192,192,0.3);
-		background-image: url('https://media.giphy.com/media/Cv7wrQjYcd6hO/giphy.gif');
-			color: black; 
+		//background-image: url('https://media.giphy.com/media/Cv7wrQjYcd6hO/giphy.gif');
+		background-image: url(bg1.jpg);
+		height: 100%;
+        	background-position: center;
+       		background-repeat: no-repeat;
+        	background-size: cover;
+
+		color: black; 
 		}
 		.center{
 			text-align: center;
@@ -28,7 +34,7 @@
 			"Enter password"/> <br>
 			
 			<div>&nbsp;</div>
-			<input type="submit" value="Login"/>	
+			<input type="submit" value="Login" onClick="document.location.href='https://web.njit.edu/~ss3968/IT202/Polls/main.php'"/>	
 	</p>
 	</div>
 		</form>

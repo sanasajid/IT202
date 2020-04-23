@@ -23,7 +23,13 @@ if(ini_get("session.use_cookies")) {
 <style>
 body{
 	//background-color: rgba(192,192,192,0.3);
-	background-image: url('https://media.giphy.com/media/Cv7wrQjYcd6hO/giphy.gif');
+	//background-image: url('https://media.giphy.com/media/Cv7wrQjYcd6hO/giphy.gif');
+	background-image: url(bg1.jpg);
+	height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+
 	color: black; 
 }
 
