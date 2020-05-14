@@ -1,6 +1,12 @@
+<?php 
+$poll_id = $_GET['poll_id'];
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
+ <meta charset="UTF-8">
+            <link rel="stylesheet" href="css/style.css">
 <style>
 ul {
   list-style-type: none;
@@ -61,20 +67,10 @@ body{
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
+
 	color: black; 
 }
 
-.center{
-	text-align: center; 
-	padding-top: 15px;  
-}
-/*p.b {
-  font-family: Comic Sans MS, cursive, sans-serif;
-  font-size: 350%;
-  text-align: center;
-  padding-top: 20px; 
-}
-*/
 img {
   float:none; 
   border-radius: 50%;
@@ -87,52 +83,52 @@ p{
   padding-top: .25mm; 
 }
 
+	
 </style>
-</head>
-<body> 
-<!-- <p class="b">poll monkey</p> -->
-<!-- <img src="anothermonkey.jpg" height= "80" width= "80"/> -->
-
+ <body>
 <ul>
   <li><a href="https://web.njit.edu/~ss3968/IT202/Polls/login.php">Log in</a></li>
   <li><a href="https://web.njit.edu/~ss3968/IT202/Polls/register.php">Register</a></li>
   <li style="float:right"><a href="https://web.njit.edu/~ss3968/IT202/Polls/profile.php">My Profile</a></li>
 </ul>
 
-<div class="center">
-	<form name="form1" method="post" action="searchresults.php">
-		<input name="search" type="text" size="40" maxlength="50"/> 
-		<input type="submit" name="Submit" value="Search"/>
-	</form>
-
-</div>
-
 <p> <img src="anothermonkey.jpg" height= "80" width= "80" style="vertical-align:middle">poll monkey</p
 
-<div class="row">
 
-  <div class="column">
-    <img src="friendsdiff.jpg" alt="TV shows" style="width:60%"> 
-    	<div class="text-block"> 
-	<a href="https://web.njit.edu/~ss3968/IT202/Polls/category.php?category=SHOWS">TV SHOWS</a>
-    	</div>
-  </div>
+            <div class="container">
+        
+                <form method="post">
+                    <textarea placeholder='Add Your Comment' name="comment"></textarea>
+                    <div class="btn">
+                        <input type="submit" name="submit" value='Comment'>
+                        <button id='clear'>Cancel</button>
+                    </div>
+                </form>
+            </div>
+	<script src='plugin.js'></script>  
+  
+ </body>
+</head>
+</html>
 
-  <div class="column">
-    <img src="food.jpg" alt="Food" style="width:75%">
-    	<div class="text-block">
-    	<a href="https://web.njit.edu/~ss3968/IT202/Polls/category.php?category=FOOD">FOOD</a>
-    	</div>
-  </div>
+<?php
 
-  <div class="column">
-    <img src="billboard.jpg" alt="Music" style="width:60%">
-    <div class="text-block">
-    	<a href="https://web.njit.edu/~ss3968/IT202/Polls/category.php?category=MUSIC">MUSIC</a>
-    	</div>
-  </div>
+if(isset($_POST['submit'])){
 
-</div>
+require("config.php");
+	$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
+	$db = new PDO($connection_string, $dbuser, $dbpass);
+	$comment = $_POST['comment']; 
+	$sql = "INSERT INTO Comments (comments_string, poll_id) VALUES (:comment, :poll_id)";
+	$params = array(":comment" =>$comment, ":poll_id" =>$poll_id);
+	$stmt = $db->prepare($sql);
+	$r = $stmt->execute($params);
+	//echo var_export($stmt->errorInfo(), true);
+	echo $comment; 
+	
+	
+	
+}
 
-</body>
-</html> 
+	
+    
