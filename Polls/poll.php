@@ -1,5 +1,12 @@
 <?php 
-$poll_id = $_GET['poll_id'];
+session_start();
+$poll_id = -1;
+	if(isset($_GET['poll_id'])){
+		$poll_id = $_GET['poll_id'];
+	}
+	else{
+		echo "<br>Poll ID not set in URL; line 8 in file<br>";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -117,39 +124,67 @@ p{
 
 <?php
 
-if(isset($_POST['submit'])){
-
 require("config.php");
 	$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
 	$db = new PDO($connection_string, $dbuser, $dbpass);
+	if(isset($_POST['submit'])){
+		
 	$comment = $_POST['comment']; 
 	$sql = "INSERT INTO Comments (comments_string, poll_id) VALUES (:comment, :poll_id)";
 	$params = array(":comment" =>$comment, ":poll_id" =>$poll_id);
 	$stmt = $db->prepare($sql);
 	$r = $stmt->execute($params);
 	//echo var_export($stmt->errorInfo(), true);
+	echo "<br>Comment submitted and inserted, must SELECT from comments table to display; line 140<br>";
 	echo $comment; 
 }
-/*	
-if(isset($_POST['answeredPoll'])){
-	$poll_id = $_POST['poll_id'];
-	$answer_id = $_POST['answer_id'];
-	$user_user = 1; 
-	"INSERT INTO Responses (poll_id, answer_id, user_id) VALUES(:poll_id, :answer_id, :user_id)";
+	
+if(isset($_POST['answerPoll'])){
+	$poll_id = -1;
+	$answer_id = -1;
+	$user_id = -1; 
+	if(isset($_POST['poll_id'])){
+		$poll_id = $_POST['poll_id'];
+	}
+	else{
+		echo "<br>Form submitted without poll_id; line 146<br>";
+	}
+	if(isset($_POST['answer'])){
+		$answer_id = $_POST['answer'];
+	}
+	else{
+		echo "<br>Form submitted without answer; line 152<br>";
+	}
+	
+	if(isset($_SESSION['user']) && isset($_SESSION['user']['id'])){
+		$user_id = $_SESSION['user']['id'];
+	}
+	else{
+		echo "<br>User isn't logged in or couldn't find user id from session; line 162<br>";
+	}
+	if($user_id > -1 && $poll_id > -1 && $answer_id > -1){
+		$stmt = $db->prepare("INSERT INTO Responses (poll_id, answer_id, user_id) VALUES(:poll_id, :answer_id, :user_id)");
+			$stmt->execute(array(":poll_id"=>$poll_id, ":answer_id"=>$answer_id, ":user_id"=>$user_id));
+		echo "<br>Response Error info: " . var_export($stmt->errorInfo(), true) . "<br>";
+	}
+	else{
+		echo "<br>Missing one of the required values for the submission; line 171<br>";
+	}	
+
 }
-*/	
-if(isset($_GET['poll_id'])){
-	require_once("config.php");
-	$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
-	$db = new PDO($connection_string, $dbuser, $dbpass);
-	$poll_id = $_GET['poll_id'];
+	
+if($poll_id > -1){
+	//require_once("config.php");
+	//$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
+	//$db = new PDO($connection_string, $dbuser, $dbpass);
+	//$poll_id = $_GET['poll_id'];
 	$stmt = $db->prepare("SELECT * FROM Questions WHERE poll_id = :poll_id AND is_approved = 1");
 	$stmt->execute(array(":poll_id"=>$poll_id));
-	$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$question_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	//echo "<pre>" . var_export($results, true) . "</pre>";
 	$stmt = $db->prepare("SELECT * FROM Answers WHERE poll_id = :poll_id");
 	$stmt->execute(array(":poll_id"=>$poll_id));
-	$results2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$answer_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 	//echo "<pre>" . var_export($results, true) . "</pre>";
         
@@ -158,31 +193,28 @@ if(isset($_GET['poll_id'])){
 
 
 ?>
-<?php if(isset($results)): ?>
-<?php foreach($results as $result):?>
+<?php if(isset($question_results)): ?>
+<?php foreach($question_results as $result):?>
 <div>
 <label> <?php echo $result['question_text']?> </label>
 </div>
 <?php endforeach; ?>
 <?php endif; ?>
 
-<?php if(isset($results2)): ?>
-<?php foreach($results2 as $result):?>
+<form id="answer_form" method="POST">
+
+<?php if(isset($answer_results)): ?>
+<?php foreach($answer_results as $result):?>
 <div>
 <label> <?php echo $result['answer_text']?> </label>
 <input type="radio" name="answer" 
-value="<?php echo $result['answer_text']?>" />
+value="<?php echo $result['id']?>" />
 </div>
 <?php endforeach; ?>
 <?php endif; ?>
-
-
-<form id="answer_form" method="POST">
-	<input name="question_text" type="hidden" value="<?php echo $result['question_text']?>"/>
-	<input name="answer_text" type="hidden" value="<?php echo $result['answer_text']?>"/>
-	<input type="submit" value="answer" name="submit"/>
+	<input name="poll_id" type="hidden" value="<?php echo $_GET['poll_id']?>"/>=
+	<input type="submit" value="answer" name="answerPoll"/>
 </form>
-
-
 	
+    
     
